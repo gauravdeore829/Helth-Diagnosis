@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  MessageCircle, 
-  Phone, 
-  Video, 
-  Mail, 
-  Clock, 
-  Send, 
-  User,
+import {
+  MessageCircle,
+  Phone,
+  Video,
+  Mail,
+  Clock,
   AlertTriangle,
-  Heart,
   Shield,
   ExternalLink
 } from 'lucide-react';
@@ -21,17 +18,6 @@ interface SupportProps {
 }
 
 const Support = ({ user, onLogout }: SupportProps) => {
-  const [chatMessage, setChatMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState<any[]>([
-    {
-      id: 1,
-      sender: 'support',
-      name: 'Sarah - Support Specialist',
-      message: 'Hi! I\'m here to help. How are you feeling today?',
-      time: '2 minutes ago',
-      isSupport: true
-    }
-  ]);
   const [showChat, setShowChat] = useState(false);
 
   const emergencyContacts = [
@@ -139,132 +125,22 @@ const Support = ({ user, onLogout }: SupportProps) => {
     }
   ];
 
-  const handleSendMessage = () => {
-    if (chatMessage.trim()) {
-      const newMessage = {
-        id: chatMessages.length + 1,
-        sender: 'user',
-        name: user.name,
-        message: chatMessage,
-        time: 'Just now',
-        isSupport: false
-      };
-      setChatMessages([...chatMessages, newMessage]);
-      setChatMessage('');
-
-      // Simulate support response
-      setTimeout(() => {
-        const supportResponse = {
-          id: chatMessages.length + 2,
-          sender: 'support',
-          name: 'Sarah - Support Specialist',
-          message: 'Thank you for sharing. I understand this might be difficult. Can you tell me more about what\'s been on your mind lately?',
-          time: 'Just now',
-          isSupport: true
-        };
-        setChatMessages(prev => [...prev, supportResponse]);
-      }, 2000);
-    }
-  };
-
   const handleStartSupport = (type: string) => {
     if (type === 'chat') {
-      setShowChat(true);
+      window.dispatchEvent(new CustomEvent('open-local-chat'));
     }
     // Other support types would open different interfaces
   };
 
   if (showChat) {
-    return (
-      <div className="flex">
-        <Navigation user={user} onLogout={onLogout} />
-        <main className="flex-1 ml-64 p-8">
-          <button
-            onClick={() => setShowChat(false)}
-            className="mb-6 text-blue-600 hover:text-blue-800 font-medium"
-          >
-            ← Back to Support Options
-          </button>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 h-96 flex flex-col">
-              {/* Chat Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white rounded-t-xl">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="bg-white bg-opacity-20 p-2 rounded-full mr-3">
-                      <MessageCircle className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Live Support Chat</h3>
-                      <p className="text-sm opacity-90">Connected to trained counselor</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center text-sm">
-                    <div className="w-2 h-2 bg-green-300 rounded-full mr-2"></div>
-                    <span>Online</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Chat Messages */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                {chatMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.isSupport ? 'justify-start' : 'justify-end'}`}
-                  >
-                    <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      msg.isSupport 
-                        ? 'bg-gray-100 text-gray-900' 
-                        : 'bg-blue-600 text-white'
-                    }`}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-medium">
-                          {msg.name}
-                        </span>
-                        <span className="text-xs opacity-75">{msg.time}</span>
-                      </div>
-                      <p className="text-sm">{msg.message}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Message Input */}
-              <div className="border-t border-gray-200 p-4">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="text"
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  />
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!chatMessage.trim()}
-                    className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Send className="h-5 w-5" />
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  All conversations are confidential and secure. If you're in immediate danger, please call 988.
-                </p>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    // Legacy chat interface removed. Now it triggers the global LocalChatbot overlay.
+    setShowChat(false);
   }
 
   return (
     <div className="flex">
       <Navigation user={user} onLogout={onLogout} />
-      
+
       <main className="flex-1 ml-64 p-8">
         {/* Header */}
         <div className="mb-8">
@@ -314,10 +190,10 @@ const Support = ({ user, onLogout }: SupportProps) => {
                     <div className="bg-white w-12 h-12 rounded-lg shadow-md flex items-center justify-center mb-4">
                       <Icon className="h-6 w-6 text-gray-600" />
                     </div>
-                    
+
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{option.title}</h3>
                     <p className="text-gray-600 mb-4">{option.description}</p>
-                    
+
                     <div className="space-y-2 mb-6">
                       <div className="flex items-center text-sm">
                         <Clock className="h-4 w-4 text-green-500 mr-2" />

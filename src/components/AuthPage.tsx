@@ -16,10 +16,35 @@ const AuthPage = ({ onLogin }: AuthPageProps) => {
     university: '',
     year: ''
   });
+  const [error, setError] = useState('');
+
+  const validateForm = () => {
+    setError('');
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address.');
+      return false;
+    }
+
+    // Password must contain at least one capital letter, one number, and one special character
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/;
+    if (!passwordRegex.test(formData.password)) {
+      setError('Password must contain a capital letter, a number, and a special character.');
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!validateForm()) {
+      return;
+    }
+
     if (isLogin) {
       // Mock login - in real app, verify against database
       const user: User = {
@@ -48,6 +73,8 @@ const AuthPage = ({ onLogin }: AuthPageProps) => {
       ...prev,
       [e.target.name]: e.target.value
     }));
+    // Clear error when user starts typing again
+    if (error) setError('');
   };
 
   return (
@@ -62,14 +89,29 @@ const AuthPage = ({ onLogin }: AuthPageProps) => {
             {isLogin ? 'Welcome Back' : 'Join MindCare'}
           </h2>
           <p className="mt-2 text-gray-600">
-            {isLogin 
-              ? 'Sign in to continue your wellness journey' 
+            {isLogin
+              ? 'Sign in to continue your wellness journey'
               : 'Create your account to get started'
             }
           </p>
         </div>
 
         <form className="mt-8 space-y-6 bg-white p-8 rounded-xl shadow-lg" onSubmit={handleSubmit}>
+          {error && (
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {!isLogin && (
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -190,8 +232,8 @@ const AuthPage = ({ onLogin }: AuthPageProps) => {
               className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
               onClick={() => setIsLogin(!isLogin)}
             >
-              {isLogin 
-                ? "Don't have an account? Sign up" 
+              {isLogin
+                ? "Don't have an account? Sign up"
                 : "Already have an account? Sign in"
               }
             </button>

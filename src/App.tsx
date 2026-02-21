@@ -13,6 +13,7 @@ import Shopping from './components/Shopping';
 import FoodOrdering from './components/FoodOrdering';
 import MusicPlayer from './components/MusicPlayer';
 import Support from './components/Support';
+import LocalChatbot from './components/LocalChatbot';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -21,7 +22,7 @@ function App() {
   useEffect(() => {
     const savedUser = localStorage.getItem('mindcare_user');
     const savedAssessment = localStorage.getItem('mindcare_assessment_completed');
-    
+
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
@@ -58,88 +59,89 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      <LocalChatbot />
       <Routes>
         <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/dashboard" replace />} />
         <Route path="/auth" element={!user ? <AuthPage onLogin={handleLogin} /> : <Navigate to="/dashboard" replace />} />
-        <Route 
-          path="/assessment" 
+        <Route
+          path="/assessment"
           element={
-            user && !hasCompletedAssessment ? 
-            <Assessment user={user} onComplete={handleAssessmentComplete} /> : 
-            <Navigate to="/dashboard" replace />
-          } 
+            user && !hasCompletedAssessment ?
+              <Assessment user={user} onComplete={handleAssessmentComplete} /> :
+              <Navigate to="/dashboard" replace />
+          }
         />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/games" 
+        <Route
+          path="/games"
           element={
             <ProtectedRoute>
               <Games user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/library" 
+        <Route
+          path="/library"
           element={
             <ProtectedRoute>
               <Library user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/doctors" 
+        <Route
+          path="/doctors"
           element={
             <ProtectedRoute>
               <DoctorConsultation user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/community" 
+        <Route
+          path="/community"
           element={
             <ProtectedRoute>
               <Community user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/shopping" 
+        <Route
+          path="/shopping"
           element={
             <ProtectedRoute>
               <Shopping user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/food" 
+        <Route
+          path="/food"
           element={
             <ProtectedRoute>
               <FoodOrdering user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/music" 
+        <Route
+          path="/music"
           element={
             <ProtectedRoute>
               <MusicPlayer user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/support" 
+        <Route
+          path="/support"
           element={
             <ProtectedRoute>
               <Support user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
       </Routes>
     </div>
